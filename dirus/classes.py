@@ -8,6 +8,8 @@ import logging
 import logging.handlers
 import subprocess
 import tempfile
+import threading
+import time
 
 import dirus
 
@@ -16,7 +18,7 @@ __license__ = 'Apache License, Version 2.0'
 __copyright__ = 'Copyright 2016 Orion Labs, Inc.'
 
 
-class Dirus(object):
+class Dirus(threading.Thread):
 
     """Dirus Class."""
 
@@ -30,18 +32,15 @@ class Dirus(object):
         _logger.propagate = False
 
     def __init__(self, config):
+        threading.Thread.__init__(self)
         self.config = config
         self.direwolf_conf = None
-        self._write_direwolf_conf()
-
         self.processes = {}
+        self.daemon = True
+        self._stop = threading.Event()
 
-        self._start()
-        self._running = True
-
-    def exit(self):
-        self._running = False
-        self._stop()
+    def __del__(self):
+        self.stop()
 
     def _write_direwolf_conf(self):
         tmp_fd, self.direwolf_conf = tempfile.mkstemp(
@@ -49,7 +48,9 @@ class Dirus(object):
         os.write(tmp_fd, "ADEVICE null null\n")
         os.close(tmp_fd)
 
-    def start(self):
+    def run(self):
+        self._write_direwolf_conf()
+
         # Allow use of 'rx_fm' for Soapy/HackRF
         rtl_cmd = self.config['rtl'].get('command', 'rtl_fm')
 
@@ -90,7 +91,7 @@ class Dirus(object):
         self.processes['src'] = src_proc
 
         direwolf_cmd = ['direwolf']
-        direwolf_cmd.extend(('-c', self.direwolf_conf))  # Configuration file name.
+        direwolf_cmd.extend(('-c', self.direwolf_conf))  # Configuration file name.  # NOQA
         direwolf_cmd.extend(('-t', 0))  # Text colors.  1=normal, 0=disabled.
         direwolf_cmd.extend(('-n', 1))  # Number of audio channels, 1 or 2.
         direwolf_cmd.extend(('-b', 16))  # Bits per audio sample, 8 or 16.
@@ -108,7 +109,13 @@ class Dirus(object):
 
         self.processes['direwolf'] = direwolf_proc
 
-    def _stop(self):
+        while not self.stopped():
+            time.sleep(0.01)
+
+    def stop(self):
+        """
+        Stop the thread at the next opportunity.
+        """
         for name in ['direwolf', 'src']:
             try:
                 proc = self.processes[name]
@@ -117,3 +124,10 @@ class Dirus(object):
                 self._logger.exception(
                     'Raised Exception while trying to terminate %s: %s',
                     name, ex)
+        self._stop.set()
+
+    def stopped(self):
+        """
+        Checks if the thread is stopped.
+        """
+        return self._stop.isSet()

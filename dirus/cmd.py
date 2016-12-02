@@ -31,12 +31,13 @@ def cli():
     dgate = dirus.Dirus(config)
 
     try:
-        while dgate._running:
+        dgate.start()
+        while dgate.is_alive():
             time.sleep(0.01)
     except KeyboardInterrupt:
-        dgate.exit()
+        dgate.stop()
     finally:
-        dgate.exit()
+        dgate.stop()
 
 
 if __name__ == '__main__':
