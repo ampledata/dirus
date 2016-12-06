@@ -1,0 +1,10 @@
+{
+    "rtl": {
+        "frequency": 144.390,
+        "ppm": 4.384,
+        "gain": 0,
+        "offset_tuning": false,
+        "device_index": 0,
+        "sample_rate": 44100
+    }
+}
