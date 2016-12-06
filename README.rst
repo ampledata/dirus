@@ -34,6 +34,7 @@ Usage
 Your best bet is to use dirus with supervisor, or another daemon management tool:
 
 ::
+
     # /etc/supervisor.d/dirus.conf
     [program:dirus]
     command=dirus -c /etc/dirus.json
