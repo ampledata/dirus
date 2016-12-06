@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""dirus Package."""
+"""Dirus Package."""
 
-from dirus.constants import LOG_FORMAT, LOG_LEVEL, SAMPLE_RATE
-from dirus.classes import Dirus
+from .constants import LOG_FORMAT, LOG_LEVEL, SAMPLE_RATE  # NOQA
+from .classes import Dirus  # NOQA
 
 __author__ = 'Greg Albrecht W2GMD <oss@undef.net>'
 __license__ = 'Apache License, Version 2.0'

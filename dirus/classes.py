@@ -91,11 +91,17 @@ class Dirus(threading.Thread):
         self.processes['src'] = src_proc
 
         direwolf_cmd = ['direwolf']
-        direwolf_cmd.extend(('-c', self.direwolf_conf))  # Configuration file name.  # NOQA
-        direwolf_cmd.extend(('-t', 0))  # Text colors.  1=normal, 0=disabled.
-        direwolf_cmd.extend(('-n', 1))  # Number of audio channels, 1 or 2.
-        direwolf_cmd.extend(('-b', 16))  # Bits per audio sample, 8 or 16.
-        direwolf_cmd.append('-')  # Read from STDIN.
+
+        # Configuration file name.
+        direwolf_cmd.extend(('-c', self.direwolf_conf))
+        # Text colors.  1=normal, 0=disabled.
+        direwolf_cmd.extend(('-t', 0))
+        # Number of audio channels, 1 or 2.
+        direwolf_cmd.extend(('-n', 1))
+        # Bits per audio sample, 8 or 16.
+        direwolf_cmd.extend(('-b', 16))
+        # Read from STDIN.
+        direwolf_cmd.append('-')
 
         direwolf_cmd = map(str, direwolf_cmd)
 

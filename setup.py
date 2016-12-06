@@ -11,7 +11,7 @@ import setuptools
 import sys
 
 __title__ = 'dirus'
-__version__ = '0.0.1b1'
+__version__ = '1.0.0'
 __author__ = 'Greg Albrecht W2GMD <oss@undef.net>'
 __license__ = 'Apache License, Version 2.0'
 __copyright__ = 'Copyright 2016 Orion Labs, Inc.'
@@ -20,7 +20,8 @@ __copyright__ = 'Copyright 2016 Orion Labs, Inc.'
 def publish():
     """Function for publishing package to pypi."""
     if sys.argv[-1] == 'publish':
-        os.system('python setup.py sdist upload')
+        os.system('python setup.py sdist')
+        os.system('twine upload dist/*')
         sys.exit()
 
 
